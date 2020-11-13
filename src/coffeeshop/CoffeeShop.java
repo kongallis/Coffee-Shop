@@ -49,8 +49,13 @@ public class CoffeeShop {
             orders.add(order);
         }
 
-
+        // Iterates through all orders
         calculateEachOrder(orders);
+
+        System.out.println("*********************");
+        // Calculates total cost of an order by id
+        System.out.println("Order id: " + orders.get(1).getId() + " has total cost: " + calculateSingleOrder(orders.get(1)));
+
 
 
 
@@ -79,25 +84,30 @@ public class CoffeeShop {
     }
 
     public static void calculateEachOrder(List<Order> orders) {
+        double totalSumOfAllOrders = 0;
         for (Order order : orders) {
-
-            double orderSum = charge(order.isEspresso_classic(), "espresso_classic")
-                    + charge(order.isEspresso_arabica(), "espresso_arabica")
-                    + charge(order.isEspresso_decaf(), "espresso_decaf")
-                    + charge(order.isMilk(), "milk")
-                    + charge(order.isSoy(), "soy")
-                    + charge(order.isCaramel_syrop(), "caramel_syrop")
-                    + charge(order.isAlmond_milk(), "almond_milk");
+            double orderSum = calculateSingleOrder(order);
             // Prints the total sum of the order with two decimals
             System.out.printf("Order with id %d has total %.2f\n", order.getId(), orderSum);
+            totalSumOfAllOrders += orderSum;
         }
-
+        System.out.printf("**** TOTAL SUM: %.2f ****\"\n", totalSumOfAllOrders);
     }
 
     public static double charge(boolean selected, String code) {
         if (selected)
             return codePriceMap.get(code);
         return 0;
+    }
+
+    public static double calculateSingleOrder(Order order) {
+        return (charge(order.isEspresso_classic(), "espresso_classic")
+                + charge(order.isEspresso_arabica(), "espresso_arabica")
+                + charge(order.isEspresso_decaf(), "espresso_decaf")
+                + charge(order.isMilk(), "milk")
+                + charge(order.isSoy(), "soy")
+                + charge(order.isCaramel_syrop(), "caramel_syrop")
+                + charge(order.isAlmond_milk(), "almond_milk"));
     }
 
 
