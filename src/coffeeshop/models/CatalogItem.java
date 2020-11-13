@@ -47,7 +47,14 @@ public class CatalogItem {
     public void setCost(double cost) {
         this.cost = cost;
     }
-    
-    
-    
+
+    @Override
+    public String toString() {
+        return "CatalogItem{" +
+                "id=" + id +
+                ", code='" + code + '\'' +
+                ", description='" + description + '\'' +
+                ", cost=" + cost +
+                '}';
+    }
 }

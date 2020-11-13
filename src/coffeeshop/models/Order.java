@@ -98,5 +98,20 @@ public class Order {
     public void setAlmond_milk(boolean almond_milk) {
         this.almond_milk = almond_milk;
     }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "id=" + id +
+                ", createdAt=" + createdAt +
+                ", espresso_classic=" + espresso_classic +
+                ", espresso_arabica=" + espresso_arabica +
+                ", espresso_decaf=" + espresso_decaf +
+                ", milk=" + milk +
+                ", soy=" + soy +
+                ", caramel_syrop=" + caramel_syrop +
+                ", almond_milk=" + almond_milk +
+                '}';
+    }
 }
 
