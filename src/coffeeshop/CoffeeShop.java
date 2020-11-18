@@ -14,6 +14,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Scanner;
+import java.util.stream.Collectors;
 
 
 public class CoffeeShop {
@@ -21,6 +23,7 @@ public class CoffeeShop {
     private static String CATALOG_ITEMS_URL = "http://5e28257b120f820014bf415a.mockapi.io/api/v1/beverage";
     private static String ORDERS_URL = "http://5e28257b120f820014bf415a.mockapi.io/api/v1/order";
     private static HashMap<String,Double> codePriceMap;
+    private static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) throws MalformedURLException {
 
@@ -56,7 +59,7 @@ public class CoffeeShop {
         // Calculates total cost of an order by id
         System.out.println("Order id: " + orders.get(1).getId() + " has total cost: " + calculateSingleOrder(orders.get(1)));
 
-
+        calculateCostOfOrderById(orders);
 
 
 
@@ -91,6 +94,7 @@ public class CoffeeShop {
             System.out.printf("Order with id %d has total %.2f\n", order.getId(), orderSum);
             totalSumOfAllOrders += orderSum;
         }
+        System.out.println("*********************");
         System.out.printf("**** TOTAL SUM: %.2f ****\"\n", totalSumOfAllOrders);
     }
 
@@ -110,6 +114,33 @@ public class CoffeeShop {
                 + charge(order.isAlmond_milk(), "almond_milk"));
     }
 
+    public static void calculateCostOfOrderById(List<Order> orders) {
+        int selectedOrderId = 0;
+        while(true) {
+            System.out.println("Please select an order ID");
 
+            if (scanner.hasNextInt() == true) {
+                selectedOrderId = scanner.nextInt();
+                break;
+            }
+            scanner.next();
+            System.out.println("Invalid input.");
+        }
+        if (selectedOrderId == 0 || selectedOrderId > orders.size()) {
+            System.out.println("WE DON'T HAVE THIS ID....");
+            calculateCostOfOrderById(orders);
+        } else {
+
+            Order selectedOrder = null;
+            for (Order order : orders) {
+                if (order.getId() == selectedOrderId) {
+                    selectedOrder = order;
+                }
+            }
+            System.out.printf("The cost of order with id: %d is equal to: %.2f \n", selectedOrderId, calculateSingleOrder(selectedOrder));
+
+        }
+
+    }
 
 }
