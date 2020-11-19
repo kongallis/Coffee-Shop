@@ -5,9 +5,8 @@ import coffeeshop.models.Order;
 import com.google.gson.Gson;
 import com.sun.org.apache.xml.internal.resolver.Catalog;
 
-import java.io.BufferedReader;
+import java.io.*;
 
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -52,18 +51,25 @@ public class CoffeeShop {
             orders.add(order);
         }
 
-        // Iterates through all orders
-        calculateEachOrder(orders);
+        PrintWriter out = openWriter("orders.txt");
 
-        System.out.println("*********************");
+
         // Calculates total cost of an order by id
-        System.out.println("Order id: " + orders.get(1).getId() + " has total cost: " + calculateSingleOrder(orders.get(1)));
+        calculateCostOfOrderById(orders, out);
 
-        calculateCostOfOrderById(orders);
+        // Iterates through all orders
+        calculateEachOrder(orders, out);
 
 
+        out.println("Order Id | Cost");
+        for (Order order : orders) {
+            writeOrder(order, out);
+        }
+        out.close();
 
     }
+
+
 
     static String readJsonFromWebService(String url) throws MalformedURLException {
         try {
@@ -86,16 +92,18 @@ public class CoffeeShop {
         return "";
     }
 
-    public static void calculateEachOrder(List<Order> orders) {
+    public static void calculateEachOrder(List<Order> orders, PrintWriter out) {
         double totalSumOfAllOrders = 0;
         for (Order order : orders) {
             double orderSum = calculateSingleOrder(order);
             // Prints the total sum of the order with two decimals
             System.out.printf("Order with id %d has total %.2f\n", order.getId(), orderSum);
+           // Write code which will write to a txt file
             totalSumOfAllOrders += orderSum;
         }
         System.out.println("*********************");
         System.out.printf("**** TOTAL SUM: %.2f ****\"\n", totalSumOfAllOrders);
+        out.printf("TOTAL SUM: %.2f \n", totalSumOfAllOrders);
     }
 
     public static double charge(boolean selected, String code) {
@@ -114,7 +122,7 @@ public class CoffeeShop {
                 + charge(order.isAlmond_milk(), "almond_milk"));
     }
 
-    public static void calculateCostOfOrderById(List<Order> orders) {
+    public static void calculateCostOfOrderById(List<Order> orders, PrintWriter out) {
         int selectedOrderId = 0;
         while(true) {
             System.out.println("Please select an order ID");
@@ -128,7 +136,7 @@ public class CoffeeShop {
         }
         if (selectedOrderId == 0 || selectedOrderId > orders.size()) {
             System.out.println("WE DON'T HAVE THIS ID....");
-            calculateCostOfOrderById(orders);
+            calculateCostOfOrderById(orders, out);
         } else {
 
             Order selectedOrder = null;
@@ -137,10 +145,30 @@ public class CoffeeShop {
                     selectedOrder = order;
                 }
             }
-            System.out.printf("The cost of order with id: %d is equal to: %.2f \n", selectedOrderId, calculateSingleOrder(selectedOrder));
-
+//            System.out.printf("The cost of order with id: %d is equal to: %.2f \n", selectedOrderId, calculateSingleOrder(selectedOrder));
+            out.printf("The cost of order with id: %d is equal to: %.2f \n", selectedOrderId, calculateSingleOrder(selectedOrder));
         }
 
     }
+
+    private static PrintWriter openWriter(String fileName) {
+        try {
+            File file = new File("fileName");
+            PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(file)), true);
+            return out;
+        }
+        catch (IOException e) {
+            System.out.println("I/O Exception");
+            System.exit(0);
+        }
+        return null;
+    }
+
+    private static void writeOrder(Order order, PrintWriter out) {
+        String line = String.format("|%6d  | %5.2f eur |", order.getId(), calculateSingleOrder(order));
+        out.println(line);
+    }
+
+
 
 }
